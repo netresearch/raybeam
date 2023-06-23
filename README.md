@@ -53,6 +53,81 @@ docker run -it -v $PWD/db.bolt:/db.bolt -p 8080:8080 ghcr.io/netresearch/raybeam
 
 > ℹ️ The database by default lives at `/db.bolt`.
 
+## Deploying Raybeam
+
+### Docker
+
+There is a Docker image available at `ghcr.io/netresearch/raybeam`.
+
+### Docker Compose
+
+You can deploy Raybeam with Docker Compose using the following example `docker-compose.yml` file:
+
+```yml
+version: "3"
+
+services:
+  raybeam:
+    image: "ghcr.io/netresearch/raybeam:latest"
+    restart: unless-stopped
+    command:
+      - "raybeam"
+      - "serve"
+      - "-d"
+      - "/raybeam/data/db.bolt"
+      - "-s"
+      - "ldap://localhost:389"
+      - "-b"
+      - "DC=example,DC=com"
+      - "-u"
+      - "readonly"
+      - "-p"
+      - "readonly"
+      - "-g"
+      - "CN=Raybeam Admins,OU=Groups,DC=example,DC=com"
+    volumes:
+      - "/var/lib/raybeam:/raybeam/data"
+    ports:
+      - "8080:8080"
+```
+
+#### Ansible
+
+You can deploy the Raybeam container with Ansible using the following variable when using [netresearch.docker_containers](https://github.com/netresearch/ansible_role_docker_containers):
+
+```yaml
+netresearch_docker_containers:
+  - name: "raybeam"
+    image: "ghcr.io/netresearch/raybeam:latest"
+    command:
+      - "raybeam"
+      - "serve"
+      - "-d"
+      - "/raybeam/data/db.bolt"
+      - "-s"
+      - "ldap://localhost:389"
+      - "-b"
+      - "DC=example,DC=com"
+      - "-u"
+      - "readonly"
+      - "-p"
+      - "readonly"
+      - "-g"
+      - "CN=Raybeam Admins,OU=Groups,DC=example,DC=com"
+    networks:
+      - name: "traefik_network"
+    mounts:
+      - type: bind
+        source: "/var/lib/raybeam"
+        target: "/raybeam/data"
+    ports:
+      - "8080:8080"
+    labels: "{{ raybeam_container_labels }}"
+    restart_policy: unless-stopped
+```
+
+> ℹ For more information, please refer to the [documentation of netresearch.docker_containers](https://github.com/netresearch/ansible_role_docker_containers#container-definition).
+
 ## License
 
 Raybeam is licensed under the MIT license, for more information please refer to the [included LICENSE file](LICENSE).
