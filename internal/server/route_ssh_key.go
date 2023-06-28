@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"raybeam/internal/models"
-	"raybeam/pkg/ldap"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	ldap "github.com/netresearch/simple-ldap-go"
 	"go.etcd.io/bbolt"
 	"golang.org/x/crypto/ssh"
 )

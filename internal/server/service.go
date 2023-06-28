@@ -1,10 +1,9 @@
 package server
 
 import (
-	"raybeam/pkg/ldap"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	ldap "github.com/netresearch/simple-ldap-go"
 	"go.etcd.io/bbolt"
 )
 

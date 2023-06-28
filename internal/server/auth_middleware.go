@@ -3,10 +3,10 @@ package server
 import (
 	"encoding/base64"
 	"errors"
-	"raybeam/pkg/ldap"
 	"strings"
 
 	ldap2 "github.com/go-ldap/ldap/v3"
+	ldap "github.com/netresearch/simple-ldap-go"
 
 	"github.com/gofiber/fiber/v2"
 )

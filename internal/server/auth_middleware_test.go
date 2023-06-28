@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"raybeam/pkg/ldap"
 	"strings"
 	"testing"
+
+	ldap "github.com/netresearch/simple-ldap-go"
 )
 
 func TestBasicAuthWithNonBasicAuthHeader(t *testing.T) {
