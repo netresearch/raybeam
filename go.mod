@@ -5,9 +5,10 @@ go 1.19
 require (
 	github.com/go-ldap/ldap/v3 v3.4.5
 	github.com/gofiber/fiber/v2 v2.46.0
+	github.com/netresearch/simple-ldap-go v0.0.0-20230628081923-f17d668afd54
 	github.com/spf13/cobra v1.7.0
 	go.etcd.io/bbolt v1.3.7
-	golang.org/x/crypto v0.10.0
+	golang.org/x/crypto v0.12.0
 )
 
 require (
@@ -20,7 +21,6 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
-	github.com/netresearch/simple-ldap-go v0.0.0-20230628081923-f17d668afd54 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
@@ -30,6 +30,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.47.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.9.0 // indirect
-	golang.org/x/term v0.9.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/term v0.11.0 // indirect
 )
