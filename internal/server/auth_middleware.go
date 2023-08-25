@@ -35,7 +35,7 @@ func basicAuth(auth string) (string, string, error) {
 	return parts[0], parts[1], nil
 }
 
-func authMiddleware(authHeader string, l ldap.LDAP) (*ldap.User, error) {
+func authMiddleware(authHeader string, l *ldap.LDAP) (*ldap.User, error) {
 	sAMAccountName, password, err := basicAuth(authHeader)
 	if err != nil {
 		return nil, err

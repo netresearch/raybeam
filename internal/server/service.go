@@ -11,22 +11,27 @@ type Server struct {
 	app *fiber.App
 	db  *bbolt.DB
 
-	ldap             ldap.LDAP
+	ldap             *ldap.LDAP
 	ldapAdminGroupDN string
 }
 
-func New(db *bbolt.DB, ldapServer, ldapBaseDN, ldapReadUser, ldapReadPassword, ldapAdminGroupDN string) *Server {
+func New(db *bbolt.DB, ldapServer, ldapBaseDN, ldapReadUser, ldapReadPassword, ldapAdminGroupDN string, isAD bool) (*Server, error) {
+	l, err := ldap.New(ldapServer, ldapBaseDN, ldapReadUser, ldapReadPassword, isAD)
+	if err != nil {
+		return nil, err
+	}
+
 	srv := &Server{
 		fiber.New(),
 		db,
 
-		ldap.New(ldapServer, ldapBaseDN, ldapReadUser, ldapReadPassword),
+		l,
 		ldapAdminGroupDN,
 	}
 
 	srv.init()
 
-	return srv
+	return srv, nil
 }
 
 func (s *Server) init() {

@@ -10,6 +10,7 @@ import (
 )
 
 var httpAddress, ldapServer, ldapBaseDN, dbLocation, readUser, readPassword, ldapAdminGroupDB string
+var ldapIsAd bool
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -35,7 +36,10 @@ var serveCmd = &cobra.Command{
 			return err
 		}
 
-		srv := server.New(db, ldapServer, ldapBaseDN, readUser, readPassword, ldapAdminGroupDB)
+		srv, err := server.New(db, ldapServer, ldapBaseDN, readUser, readPassword, ldapAdminGroupDB, ldapIsAd)
+		if err != nil {
+			return err
+		}
 
 		return srv.Listen(httpAddress)
 	},
@@ -53,6 +57,8 @@ func init() {
 	serveCmd.Flags().StringVarP(&readPassword, "ldap-read-password", "p", "", "LDAP password to use for read-only operations")
 
 	serveCmd.Flags().StringVarP(&ldapAdminGroupDB, "ldap-admin-group-dn", "g", "", "LDAP group DN to use for identifying administrators")
+
+	serveCmd.Flags().BoolVar(&ldapIsAd, "ldap-is-ad", false, "Whether the LDAP server is Active Directory")
 
 	if err := serveCmd.MarkFlagRequired("ldap-read-user"); err != nil {
 		log.Fatalln(err)
