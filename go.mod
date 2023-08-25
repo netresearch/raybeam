@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/go-ldap/ldap/v3 v3.4.5
 	github.com/gofiber/fiber/v2 v2.48.0
-	github.com/netresearch/simple-ldap-go v0.0.0-20230628081923-f17d668afd54
+	github.com/netresearch/simple-ldap-go v0.0.0-20230815093415-276aae57f9a7
 	github.com/spf13/cobra v1.7.0
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/crypto v0.12.0
@@ -32,4 +32,5 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/term v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 )
