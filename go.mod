@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/go-ldap/ldap/v3 v3.4.6
 	github.com/gofiber/fiber/v2 v2.49.2
-	github.com/netresearch/simple-ldap-go v0.0.0-20230815093415-276aae57f9a7
+	github.com/netresearch/simple-ldap-go v0.0.0-20230926134750-ba6f741dd4ff
 	github.com/spf13/cobra v1.7.0
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/crypto v0.13.0
