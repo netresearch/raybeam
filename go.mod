@@ -8,7 +8,7 @@ require (
 	github.com/netresearch/simple-ldap-go v0.0.0-20231002103847-cb56d7d4e6c7
 	github.com/spf13/cobra v1.7.0
 	go.etcd.io/bbolt v1.3.7
-	golang.org/x/crypto v0.13.0
+	golang.org/x/crypto v0.14.0
 )
 
 require (
@@ -30,7 +30,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.49.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
-	golang.org/x/term v0.12.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/term v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 )
