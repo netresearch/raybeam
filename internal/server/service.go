@@ -15,8 +15,8 @@ type Server struct {
 	ldapAdminGroupDN string
 }
 
-func New(db *bbolt.DB, ldapServer, ldapBaseDN, ldapReadUser, ldapReadPassword, ldapAdminGroupDN string, isAD bool) (*Server, error) {
-	l, err := ldap.New(ldapServer, ldapBaseDN, ldapReadUser, ldapReadPassword, isAD)
+func New(db *bbolt.DB, ldapConfig ldap.Config, ldapReadUser, ldapReadPassword, ldapAdminGroupDN string) (*Server, error) {
+	l, err := ldap.New(ldapConfig, ldapReadUser, ldapReadPassword)
 	if err != nil {
 		return nil, err
 	}

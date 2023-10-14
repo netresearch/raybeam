@@ -105,7 +105,7 @@ func (s *Server) uploadSSHKeyForDN(dn string, rawKey []byte) error {
 func (s *Server) handleHTTPGetUsersMeSSHKeys(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 
-	keys, err := s.getSSHKeysForDN(user.DN)
+	keys, err := s.getSSHKeysForDN(user.DN())
 	if err != nil {
 		return sendError(c, fiber.StatusInternalServerError, "internal server error")
 	}
@@ -117,7 +117,7 @@ func (s *Server) handleHTTPGetUsersMeSSHKeys(c *fiber.Ctx) error {
 		})
 	}
 
-	rawKeys := []string{fmt.Sprintf("# Keys uploaded by \"%s\"\n", user.DN)}
+	rawKeys := []string{fmt.Sprintf("# Keys uploaded by \"%s\"\n", user.DN())}
 	for _, key := range keys {
 		rawKeys = append(rawKeys, key.Key)
 	}
@@ -128,7 +128,7 @@ func (s *Server) handleHTTPGetUsersMeSSHKeys(c *fiber.Ctx) error {
 func (s *Server) handleHTTPPutUsersMeSSHKey(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 
-	if err := s.uploadSSHKeyForDN(user.DN, c.Body()); err != nil {
+	if err := s.uploadSSHKeyForDN(user.DN(), c.Body()); err != nil {
 		return sendError(c, fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -144,7 +144,7 @@ func (s *Server) handleHTTPPutUsersMeSSHKey(c *fiber.Ctx) error {
 func (s *Server) handleHTTPDeleteUsersMeSSHKeys(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 
-	if err := s.deleteSSHKeysForDN(user.DN); err != nil {
+	if err := s.deleteSSHKeysForDN(user.DN()); err != nil {
 		return sendError(c, fiber.StatusInternalServerError, "internal server error")
 	}
 
@@ -161,7 +161,7 @@ func (s *Server) handleHTTPGetUsersMeSSHKey(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 	fingerprint := c.Params("fingerprint")
 
-	key, err := s.getSSHKeyForDN(user.DN, fingerprint)
+	key, err := s.getSSHKeyForDN(user.DN(), fingerprint)
 	if err != nil {
 		if errors.Is(err, models.ErrSSHKeyNotFound) {
 			return sendError(c, fiber.StatusNotFound, "ssh key not found")
@@ -189,7 +189,7 @@ func (s *Server) handleHTTPDeleteUsersSSHKeys(c *fiber.Ctx) error {
 			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
 		}
 
-		if err := s.deleteSSHKeysForDN(user.DN); err != nil {
+		if err := s.deleteSSHKeysForDN(user.DN()); err != nil {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
 		}
 	}
@@ -213,12 +213,12 @@ func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
 			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
 		}
 
-		userKeys, err := s.getSSHKeysForDN(user.DN)
+		userKeys, err := s.getSSHKeysForDN(user.DN())
 		if err != nil {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
 		}
 
-		keys[user.DN] = userKeys
+		keys[user.DN()] = userKeys
 	}
 
 	if acceptsJson(c) {
@@ -248,7 +248,7 @@ func (s *Server) handleHTTPPutUsersSSHKey(c *fiber.Ctx) error {
 			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
 		}
 
-		if err := s.uploadSSHKeyForDN(user.DN, c.Body()); err != nil {
+		if err := s.uploadSSHKeyForDN(user.DN(), c.Body()); err != nil {
 			return sendError(c, fiber.StatusInternalServerError, err.Error())
 		}
 	}
@@ -266,7 +266,7 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 	fingerprint := c.Params("fingerprint")
 
-	if err := s.deleteSSHKeyForDN(user.DN, fingerprint); err != nil {
+	if err := s.deleteSSHKeyForDN(user.DN(), fingerprint); err != nil {
 		return sendError(c, fiber.StatusInternalServerError, "internal server error")
 	}
 
@@ -290,7 +290,7 @@ func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
 		}
 
-		key, err := s.getSSHKeyForDN(user.DN, fingerprint)
+		key, err := s.getSSHKeyForDN(user.DN(), fingerprint)
 		if err != nil {
 			if errors.Is(err, models.ErrSSHKeyNotFound) {
 				return sendError(c, fiber.StatusNotFound, "ssh key not found")
@@ -299,7 +299,7 @@ func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
 		}
 
-		keys[user.DN] = *key
+		keys[user.DN()] = *key
 	}
 
 	if acceptsJson(c) {
@@ -328,7 +328,7 @@ func (s *Server) handleHTTPDeleteUsersSSHKey(c *fiber.Ctx) error {
 			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
 		}
 
-		if err := s.deleteSSHKeyForDN(user.DN, fingerprint); err != nil {
+		if err := s.deleteSSHKeyForDN(user.DN(), fingerprint); err != nil {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
 		}
 	}

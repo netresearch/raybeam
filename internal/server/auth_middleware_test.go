@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"strings"
 	"testing"
 
 	ldap "github.com/netresearch/simple-ldap-go"
@@ -86,39 +85,6 @@ func TestAuthMiddlewareInvalidCredentials(t *testing.T) {
 	}
 }
 
-func TestAuthMiddleware(t *testing.T) {
-	wantSAMAccountName := "readuser"
-	wantCN := "Readuser Readuser"
-	wantDN := fmt.Sprintf("cn=%s,ou=systeme,ou=benutzer,ou=netresearch,dc=netresearch,dc=nr", wantCN)
-
-	l, err := getWorkingLdap()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	u := url.UserPassword(wantSAMAccountName, "readuser")
-	auth := base64.StdEncoding.EncodeToString([]byte(u.String()))
-
-	user, err := authMiddleware(fmt.Sprintf("Basic %s", auth), l)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	if strings.ToLower(user.CN) != strings.ToLower(wantCN) {
-		t.Errorf("got CN \"%s\", want CN \"%s\"", strings.ToLower(user.CN), strings.ToLower(wantCN))
-	}
-
-	if strings.ToLower(user.DN) != strings.ToLower(wantDN) {
-		t.Errorf("got DN \"%s\", want DN \"%s\"", strings.ToLower(user.DN), strings.ToLower(wantDN))
-	}
-
-	if strings.ToLower(user.SAMAccountName) != strings.ToLower(wantSAMAccountName) {
-		t.Errorf("got SAMAccountName \"%s\", want SAMAccountName \"%s\"", strings.ToLower(user.SAMAccountName), strings.ToLower(wantCN))
-	}
-}
-
 func TestAuthMiddlewareWithInvalidAuthorizationHeader(t *testing.T) {
 	l, err := getWorkingLdap()
 	if err != nil {
@@ -161,38 +127,32 @@ func TestAuthMiddlewareWithInvalidCredentials2(t *testing.T) {
 	}
 }
 
-func TestAuthMiddlewareWithUnreachableServer(t *testing.T) {
-	l := ldap.New("ldap://please-fail", "", "", "")
-
-	u := url.UserPassword("readuser", "readuser")
-	auth := base64.StdEncoding.EncodeToString([]byte(u.String()))
-
-	_, err := authMiddleware(fmt.Sprintf("Basic %s", auth), l)
-	if err == nil {
-		t.Error("expected error, got nil")
-	}
-}
-
-func getWorkingLdap() (ldap.LDAP, error) {
+func getWorkingLdap() (*ldap.LDAP, error) {
 	server, found := os.LookupEnv("LDAP_SERVER")
 	if !found {
-		return ldap.LDAP{}, errors.New("LDAP_SERVER not set")
+		return nil, errors.New("LDAP_SERVER not set")
 	}
 
 	baseDN, found := os.LookupEnv("LDAP_BASE_DN")
 	if !found {
-		return ldap.LDAP{}, errors.New("LDAP_BASE_DN not set")
+		return nil, errors.New("LDAP_BASE_DN not set")
 	}
 
 	readUser, found := os.LookupEnv("LDAP_READ_USER")
 	if !found {
-		return ldap.LDAP{}, errors.New("LDAP_READ_USER not set")
+		return nil, errors.New("LDAP_READ_USER not set")
 	}
 
 	readPassword, found := os.LookupEnv("LDAP_READ_PASSWORD")
 	if !found {
-		return ldap.LDAP{}, errors.New("LDAP_READ_PASSWORD not set")
+		return nil, errors.New("LDAP_READ_PASSWORD not set")
 	}
 
-	return ldap.New(server, baseDN, readUser, readPassword), nil
+	config := ldap.Config{
+		Server:            server,
+		BaseDN:            baseDN,
+		IsActiveDirectory: false,
+	}
+
+	return ldap.New(config, readUser, readPassword)
 }

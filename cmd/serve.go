@@ -5,6 +5,7 @@ import (
 	"raybeam/internal/models"
 	"raybeam/internal/server"
 
+	ldap "github.com/netresearch/simple-ldap-go"
 	"github.com/spf13/cobra"
 	"go.etcd.io/bbolt"
 )
@@ -36,7 +37,13 @@ var serveCmd = &cobra.Command{
 			return err
 		}
 
-		srv, err := server.New(db, ldapServer, ldapBaseDN, readUser, readPassword, ldapAdminGroupDB, ldapIsAd)
+		ldapConfig := ldap.Config{
+			Server:            ldapServer,
+			BaseDN:            ldapBaseDN,
+			IsActiveDirectory: ldapIsAd,
+		}
+
+		srv, err := server.New(db, ldapConfig, readUser, readPassword, ldapAdminGroupDB)
 		if err != nil {
 			return err
 		}
