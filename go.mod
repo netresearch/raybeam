@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.6
-	github.com/gofiber/fiber/v2 v2.49.2
+	github.com/gofiber/fiber/v2 v2.50.0
 	github.com/netresearch/simple-ldap-go v0.0.0-20231006124956-e3f59e3a24f0
 	github.com/spf13/cobra v1.7.0
 	go.etcd.io/bbolt v1.3.7
@@ -28,7 +28,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.49.0 // indirect
+	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
