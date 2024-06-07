@@ -7,7 +7,7 @@ toolchain go1.22.3
 require (
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/gofiber/fiber/v2 v2.52.4
-	github.com/netresearch/simple-ldap-go v0.0.0-20240523195632-4a351a86357f
+	github.com/netresearch/simple-ldap-go v0.0.0-20240607101955-86bc2355918d
 	github.com/spf13/cobra v1.8.0
 	go.etcd.io/bbolt v1.3.10
 	golang.org/x/crypto v0.23.0
@@ -34,5 +34,5 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/term v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
 )
