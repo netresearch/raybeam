@@ -8,7 +8,7 @@ require (
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/netresearch/simple-ldap-go v0.0.0-20240523195632-4a351a86357f
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	go.etcd.io/bbolt v1.3.10
 	golang.org/x/crypto v0.24.0
 )
