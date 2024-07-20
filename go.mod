@@ -7,7 +7,7 @@ toolchain go1.22.5
 require (
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/gofiber/fiber/v2 v2.52.5
-	github.com/netresearch/simple-ldap-go v0.0.0-20240607101955-86bc2355918d
+	github.com/netresearch/simple-ldap-go v0.0.0-20240720122327-a5323ef87ca3
 	github.com/spf13/cobra v1.8.1
 	go.etcd.io/bbolt v1.3.10
 	golang.org/x/crypto v0.25.0
@@ -16,7 +16,7 @@ require (
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/go-asn1-ber/asn1-ber v1.5.5 // indirect
+	github.com/go-asn1-ber/asn1-ber v1.5.7 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
