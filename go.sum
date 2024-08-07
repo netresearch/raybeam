@@ -114,6 +114,8 @@ github.com/netresearch/simple-ldap-go v0.0.0-20240607101955-86bc2355918d h1:pcPr
 github.com/netresearch/simple-ldap-go v0.0.0-20240607101955-86bc2355918d/go.mod h1:KxeNTGTOnt55XNeLDtkcBH1ykmCaYOV00xdzxp4zaBI=
 github.com/netresearch/simple-ldap-go v0.0.0-20240720122327-a5323ef87ca3 h1:0U8VJMYKoSpPvIzdHLUvaLHFZVEV0UW3rnzfjJ3NiP4=
 github.com/netresearch/simple-ldap-go v0.0.0-20240720122327-a5323ef87ca3/go.mod h1:F9QMSB4kbQw/Vjg+wq4HPatosW1hjtf6aC8nzlPQxYc=
+github.com/netresearch/simple-ldap-go v0.0.0-20240807130235-089547ad2350 h1:HFbc5WP+XmC9QDafD8xwd2cFOEKaTEJLWzIeekGyQQ0=
+github.com/netresearch/simple-ldap-go v0.0.0-20240807130235-089547ad2350/go.mod h1:wLYBQdBeNuRIWxD7hVugwlnfAY+tBjXnrvn8B0K68Yw=
 github.com/philhofer/fwd v1.1.1/go.mod h1:gk3iGcWd9+svBvR0sR+KPcfE+RNWozjowpeBVG3ZVNU=
 github.com/philhofer/fwd v1.1.2 h1:bnDivRJ1EWPjUIRXV5KfORO897HTbpFAQddBdE8t7Gw=
 github.com/philhofer/fwd v1.1.2/go.mod h1:qkPdfjR2SIEbspLqpe1tO4n5yICnr2DY7mqEx2tUTP0=
