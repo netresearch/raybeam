@@ -7,7 +7,7 @@ toolchain go1.23.0
 require (
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/gofiber/fiber/v2 v2.52.5
-	github.com/netresearch/simple-ldap-go v0.0.0-20240807130235-089547ad2350
+	github.com/netresearch/simple-ldap-go v0.0.0-20240815084059-4a28ba8a351e
 	github.com/spf13/cobra v1.8.1
 	go.etcd.io/bbolt v1.3.10
 	golang.org/x/crypto v0.26.0
