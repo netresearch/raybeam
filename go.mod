@@ -2,7 +2,7 @@ module raybeam
 
 go 1.22
 
-toolchain go1.23.1
+toolchain go1.23.2
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.8
