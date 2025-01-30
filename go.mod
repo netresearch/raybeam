@@ -5,12 +5,12 @@ go 1.22
 toolchain go1.23.5
 
 require (
-	github.com/go-ldap/ldap/v3 v3.4.8
+	github.com/go-ldap/ldap/v3 v3.4.10
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/netresearch/simple-ldap-go v1.0.1
 	github.com/spf13/cobra v1.8.1
 	go.etcd.io/bbolt v1.3.11
-	golang.org/x/crypto v0.29.0
+	golang.org/x/crypto v0.31.0
 )
 
 require (
@@ -33,6 +33,6 @@ require (
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
-	golang.org/x/term v0.26.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
+	golang.org/x/term v0.27.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 )
