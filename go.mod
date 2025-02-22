@@ -1,6 +1,6 @@
 module raybeam
 
-go 1.23
+go 1.23.0
 
 toolchain go1.24.0
 
@@ -10,7 +10,7 @@ require (
 	github.com/netresearch/simple-ldap-go v1.0.2
 	github.com/spf13/cobra v1.9.1
 	go.etcd.io/bbolt v1.4.0
-	golang.org/x/crypto v0.33.0
+	golang.org/x/crypto v0.34.0
 )
 
 require (
