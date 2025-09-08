@@ -1,6 +1,6 @@
 module raybeam
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.25.0
 
@@ -10,7 +10,7 @@ require (
 	github.com/netresearch/simple-ldap-go v1.0.2
 	github.com/spf13/cobra v1.9.1
 	go.etcd.io/bbolt v1.4.3
-	golang.org/x/crypto v0.41.0
+	golang.org/x/crypto v0.42.0
 )
 
 require (
@@ -32,7 +32,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.35.0 // indirect
-	golang.org/x/term v0.34.0 // indirect
-	golang.org/x/text v0.28.0 // indirect
+	golang.org/x/sys v0.36.0 // indirect
+	golang.org/x/term v0.35.0 // indirect
+	golang.org/x/text v0.29.0 // indirect
 )
