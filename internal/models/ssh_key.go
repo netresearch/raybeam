@@ -4,6 +4,7 @@ package models
 import (
 	"encoding/json"
 	"errors"
+	"slices"
 
 	"go.etcd.io/bbolt"
 )
@@ -98,14 +99,10 @@ func DeleteKeyFromUser(tx *bbolt.Tx, dn, fingerprint string) error {
 		return err
 	}
 
-	newKeys := make([]SSHKey, 0)
-	for _, k := range keys {
-		if k.Fingerprint == fingerprint {
-			continue
-		}
-
-		newKeys = append(newKeys, k)
-	}
+	// Use slices.DeleteFunc for efficient filtering (Go 1.21+)
+	newKeys := slices.DeleteFunc(keys, func(k SSHKey) bool {
+		return k.Fingerprint == fingerprint
+	})
 
 	return SetKeysForUser(tx, dn, newKeys)
 }
