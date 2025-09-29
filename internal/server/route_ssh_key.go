@@ -205,12 +205,16 @@ func (s *Server) handleHTTPGetUsersMeSSHKey(c *fiber.Ctx) error {
 func (s *Server) handleHTTPDeleteUsersSSHKeys(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 
-	for _, sAMAccountName := range sAMAccountNames {
-		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
-		if err != nil {
-			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
-		}
+	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, "internal server error")
+	}
 
+	if len(users) == 0 {
+		return sendError(c, fiber.StatusNotFound, "no users found")
+	}
+
+	for _, user := range users {
 		if err := s.deleteSSHKeysForDN(user.DN()); err != nil {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
 		}
@@ -229,12 +233,16 @@ func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 	keys := make(map[string]map[string]models.SSHKey)
 
-	for _, sAMAccountName := range sAMAccountNames {
-		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
-		if err != nil {
-			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
-		}
+	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, "internal server error")
+	}
 
+	if len(users) == 0 {
+		return sendError(c, fiber.StatusNotFound, "no users found")
+	}
+
+	for _, user := range users {
 		userKeys, err := s.getSSHKeysForDN(user.DN())
 		if err != nil {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
@@ -264,12 +272,16 @@ func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
 func (s *Server) handleHTTPPutUsersSSHKey(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 
-	for _, sAMAccountName := range sAMAccountNames {
-		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
-		if err != nil {
-			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
-		}
+	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, "internal server error")
+	}
 
+	if len(users) == 0 {
+		return sendError(c, fiber.StatusNotFound, "no users found")
+	}
+
+	for _, user := range users {
 		if err := s.uploadSSHKeyForDN(user.DN(), c.Body()); err != nil {
 			return sendError(c, fiber.StatusInternalServerError, err.Error())
 		}
@@ -306,12 +318,16 @@ func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 	fingerprint := c.Params("fingerprint")
 	keys := make(map[string]models.SSHKey)
 
-	for _, sAMAccountName := range sAMAccountNames {
-		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
-		if err != nil {
-			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
-		}
+	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, "internal server error")
+	}
 
+	if len(users) == 0 {
+		return sendError(c, fiber.StatusNotFound, "no users found")
+	}
+
+	for _, user := range users {
 		key, err := s.getSSHKeyForDN(user.DN(), fingerprint)
 		if err != nil {
 			if errors.Is(err, models.ErrSSHKeyNotFound) {
@@ -344,12 +360,16 @@ func (s *Server) handleHTTPDeleteUsersSSHKey(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 	fingerprint := c.Params("fingerprint")
 
-	for _, sAMAccountName := range sAMAccountNames {
-		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
-		if err != nil {
-			return sendError(c, fiber.StatusNotFound, fmt.Sprintf("user \"%s\" not found", sAMAccountName))
-		}
+	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
+	if err != nil {
+		return sendError(c, fiber.StatusInternalServerError, "internal server error")
+	}
 
+	if len(users) == 0 {
+		return sendError(c, fiber.StatusNotFound, "no users found")
+	}
+
+	for _, user := range users {
 		if err := s.deleteSSHKeyForDN(user.DN(), fingerprint); err != nil {
 			return sendError(c, fiber.StatusInternalServerError, "internal server error")
 		}
