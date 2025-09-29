@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine AS builder
+FROM golang:1.25.1-alpine AS builder
 WORKDIR /build
 RUN apk add git
 
@@ -9,7 +9,7 @@ RUN go mod download
 COPY . /build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /raybeam
 
-FROM alpine:3.22 AS runner
+FROM alpine:3.22.1 AS runner
 
 COPY --from=builder /raybeam /bin/raybeam
 
