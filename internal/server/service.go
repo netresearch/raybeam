@@ -15,7 +15,7 @@ type Server struct {
 	app *fiber.App
 	db  *bbolt.DB
 
-	ldap             *ldap.LDAP
+	ldap             LDAPClient
 	ldapAdminGroupDN string
 }
 
