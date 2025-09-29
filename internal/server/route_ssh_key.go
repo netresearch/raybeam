@@ -12,6 +12,16 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+// fingerprintFromURLSafe converts a URL-safe fingerprint back to standard format.
+// URL-safe format: SHA256:-DiY3wvvV6TuJJhbpZisF_zLDA0zPMSvHdkr4UvCOqU
+// Standard format: SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU
+// This reverses base64url encoding (RFC 4648): '-' -> '+', '_' -> '/'
+func fingerprintFromURLSafe(urlSafeFingerprint string) string {
+	fingerprint := strings.ReplaceAll(urlSafeFingerprint, "-", "+")
+	fingerprint = strings.ReplaceAll(fingerprint, "_", "/")
+	return fingerprint
+}
+
 var (
 	errCouldNotParseSSHKey   = errors.New("could not parse SSH key")
 	errSSHKeyAlreadyUploaded = errors.New("SSH key already uploaded")
@@ -181,7 +191,8 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKeys(c *fiber.Ctx) error {
 
 func (s *Server) handleHTTPGetUsersMeSSHKey(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
-	fingerprint := c.Params("fingerprint")
+	urlSafeFingerprint := c.Params("fingerprint")
+	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
 
 	key, err := s.getSSHKeyForDN(user.DN(), fingerprint)
 	if err != nil {
@@ -298,7 +309,8 @@ func (s *Server) handleHTTPPutUsersSSHKey(c *fiber.Ctx) error {
 
 func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
-	fingerprint := c.Params("fingerprint")
+	urlSafeFingerprint := c.Params("fingerprint")
+	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
 
 	if err := s.deleteSSHKeyForDN(user.DN(), fingerprint); err != nil {
 		return sendError(c, fiber.StatusInternalServerError, "internal server error")
@@ -315,7 +327,8 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
 
 func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
-	fingerprint := c.Params("fingerprint")
+	urlSafeFingerprint := c.Params("fingerprint")
+	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
 	keys := make(map[string]models.SSHKey)
 
 	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
@@ -358,7 +371,8 @@ func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 
 func (s *Server) handleHTTPDeleteUsersSSHKey(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
-	fingerprint := c.Params("fingerprint")
+	urlSafeFingerprint := c.Params("fingerprint")
+	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
 
 	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
 	if err != nil {
