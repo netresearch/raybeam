@@ -46,17 +46,14 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go-version: ['1.24', '1.25']
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Set up Go ${{ matrix.go-version }}
+      - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version-file: 'go.mod'
           cache: true
 
       - name: Download dependencies
@@ -70,7 +67,6 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
-        if: matrix.go-version == '1.25'
         with:
           files: ./coverage.txt
           flags: unittests
