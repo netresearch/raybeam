@@ -123,12 +123,12 @@ func newTestServer(ldapClient LDAPClient, adminGroupDN string) (*Server, func(),
 		return nil, nil, err
 	}
 	dbPath := tmpfile.Name()
-	tmpfile.Close()
+	_ = tmpfile.Close()
 
 	// Open BoltDB
 	db, err := bbolt.Open(dbPath, 0600, nil)
 	if err != nil {
-		os.Remove(dbPath)
+		_ = os.Remove(dbPath)
 		return nil, nil, err
 	}
 
@@ -138,8 +138,8 @@ func newTestServer(ldapClient LDAPClient, adminGroupDN string) (*Server, func(),
 		return err
 	})
 	if err != nil {
-		db.Close()
-		os.Remove(dbPath)
+		_ = db.Close()
+		_ = os.Remove(dbPath)
 		return nil, nil, err
 	}
 
@@ -160,8 +160,8 @@ func newTestServer(ldapClient LDAPClient, adminGroupDN string) (*Server, func(),
 	srv.init()
 
 	cleanup := func() {
-		db.Close()
-		os.Remove(dbPath)
+		_ = db.Close()
+		_ = os.Remove(dbPath)
 	}
 
 	return srv, cleanup, nil
