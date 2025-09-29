@@ -17,6 +17,28 @@ var (
 	errSSHKeyAlreadyUploaded = errors.New("SSH key already uploaded")
 )
 
+// JSON response types for typed API responses
+type (
+	successResponse struct {
+		Success bool `json:"success"`
+	}
+
+	keysResponse struct {
+		Success bool                     `json:"success"`
+		Keys    map[string]models.SSHKey `json:"keys"`
+	}
+
+	multiUserKeysResponse struct {
+		Success bool                                `json:"success"`
+		Keys    map[string]map[string]models.SSHKey `json:"keys"`
+	}
+
+	keyResponse struct {
+		Success bool           `json:"success"`
+		Key     *models.SSHKey `json:"key"`
+	}
+)
+
 func (s *Server) getSSHKeyForDN(dn, fingerprint string) (*models.SSHKey, error) {
 	var key models.SSHKey
 
@@ -111,9 +133,9 @@ func (s *Server) handleHTTPGetUsersMeSSHKeys(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
-			"keys":    keys,
+		return c.Status(fiber.StatusOK).JSON(keysResponse{
+			Success: true,
+			Keys:    keys,
 		})
 	}
 
@@ -133,8 +155,8 @@ func (s *Server) handleHTTPPutUsersMeSSHKey(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusCreated).JSON(map[string]interface{}{
-			"success": true,
+		return c.Status(fiber.StatusCreated).JSON(successResponse{
+			Success: true,
 		})
 	}
 
@@ -149,8 +171,8 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKeys(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
+		return c.Status(fiber.StatusOK).JSON(successResponse{
+			Success: true,
 		})
 	}
 
@@ -171,9 +193,9 @@ func (s *Server) handleHTTPGetUsersMeSSHKey(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
-			"key":     key,
+		return c.Status(fiber.StatusOK).JSON(keyResponse{
+			Success: true,
+			Key:     key,
 		})
 	}
 
@@ -195,8 +217,8 @@ func (s *Server) handleHTTPDeleteUsersSSHKeys(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
+		return c.Status(fiber.StatusOK).JSON(successResponse{
+			Success: true,
 		})
 	}
 
@@ -205,7 +227,7 @@ func (s *Server) handleHTTPDeleteUsersSSHKeys(c *fiber.Ctx) error {
 
 func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
-	keys := make(map[string]map[string]models.SSHKey, 0)
+	keys := make(map[string]map[string]models.SSHKey)
 
 	for _, sAMAccountName := range sAMAccountNames {
 		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
@@ -222,9 +244,9 @@ func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
-			"keys":    keys,
+		return c.Status(fiber.StatusOK).JSON(multiUserKeysResponse{
+			Success: true,
+			Keys:    keys,
 		})
 	}
 
@@ -254,8 +276,8 @@ func (s *Server) handleHTTPPutUsersSSHKey(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusCreated).JSON(map[string]interface{}{
-			"success": true,
+		return c.Status(fiber.StatusCreated).JSON(successResponse{
+			Success: true,
 		})
 	}
 
@@ -271,8 +293,8 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
+		return c.Status(fiber.StatusOK).JSON(successResponse{
+			Success: true,
 		})
 	}
 
@@ -282,7 +304,7 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
 func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 	fingerprint := c.Params("fingerprint")
-	keys := make(map[string]models.SSHKey, 0)
+	keys := make(map[string]models.SSHKey)
 
 	for _, sAMAccountName := range sAMAccountNames {
 		user, err := s.ldap.FindUserBySAMAccountName(sAMAccountName)
@@ -303,9 +325,9 @@ func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
-			"keys":    keys,
+		return c.Status(fiber.StatusOK).JSON(keysResponse{
+			Success: true,
+			Keys:    keys,
 		})
 	}
 
@@ -334,8 +356,8 @@ func (s *Server) handleHTTPDeleteUsersSSHKey(c *fiber.Ctx) error {
 	}
 
 	if acceptsJson(c) {
-		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"success": true,
+		return c.Status(fiber.StatusOK).JSON(successResponse{
+			Success: true,
 		})
 	}
 
