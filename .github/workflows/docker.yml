@@ -13,6 +13,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: "${{ github.repository_owner }}/raybeam"
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   docker:
     runs-on: ubuntu-latest
