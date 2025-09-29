@@ -120,10 +120,8 @@ func (s *Server) isAdminMiddleware(c *fiber.Ctx) error {
 		return c.Next()
 	}
 
-	for _, group := range user.Groups {
-		if group == s.ldapAdminGroupDN {
-			return c.Next()
-		}
+	if user.IsMemberOf(s.ldapAdminGroupDN) {
+		return c.Next()
 	}
 
 	return unauthorized("not in admin group")
