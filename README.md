@@ -2,6 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/netresearch/raybeam.svg)](https://pkg.go.dev/github.com/netresearch/raybeam)
 [![Go Report Card](https://goreportcard.com/badge/github.com/netresearch/raybeam)](https://goreportcard.com/report/github.com/netresearch/raybeam)
+[![CI Status](https://github.com/netresearch/raybeam/actions/workflows/ci.yml/badge.svg)](https://github.com/netresearch/raybeam/actions/workflows/ci.yml)
 [![Docker Build](https://github.com/netresearch/raybeam/actions/workflows/docker.yml/badge.svg)](https://github.com/netresearch/raybeam/actions/workflows/docker.yml)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/netresearch/raybeam)](https://go.dev/dl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
