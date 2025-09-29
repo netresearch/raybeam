@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"log"
 	"raybeam/internal/models"
 	"raybeam/internal/server"
@@ -67,15 +68,19 @@ func init() {
 
 	serveCmd.Flags().BoolVar(&ldapIsAd, "ldap-is-ad", false, "Whether the LDAP server is Active Directory")
 
+	// Collect all flag validation errors using Go 1.20's errors.Join
+	// This provides better UX by showing all missing required flags at once
+	var errs []error
 	if err := serveCmd.MarkFlagRequired("ldap-read-user"); err != nil {
-		log.Fatalln(err)
+		errs = append(errs, err)
 	}
-
 	if err := serveCmd.MarkFlagRequired("ldap-read-password"); err != nil {
-		log.Fatalln(err)
+		errs = append(errs, err)
 	}
-
 	if err := serveCmd.MarkFlagRequired("ldap-admin-group-dn"); err != nil {
+		errs = append(errs, err)
+	}
+	if err := errors.Join(errs...); err != nil {
 		log.Fatalln(err)
 	}
 

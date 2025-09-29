@@ -17,6 +17,12 @@ var (
 	ErrAuthFailed          = errors.New("authorization failed")
 )
 
+// errorResponse represents an authentication/authorization error response
+type errorResponse struct {
+	Success bool   `json:"success"`
+	Error   string `json:"error"`
+}
+
 func basicAuth(auth string) (string, string, error) {
 	if len(auth) < 6 || strings.ToLower(auth[:6]) != "basic " {
 		return "", "", ErrAuthHeaderMissing
@@ -70,9 +76,9 @@ func (s *Server) authMiddleware(c *fiber.Ctx) error {
 		c.Status(fiber.StatusUnauthorized)
 
 		if c.Get(fiber.HeaderAccept) == fiber.MIMEApplicationJSON {
-			return c.JSON(map[string]interface{}{
-				"success": false,
-				"error":   reason,
+			return c.JSON(errorResponse{
+				Success: false,
+				Error:   reason,
 			})
 		}
 
@@ -94,9 +100,9 @@ func (s *Server) isAdminMiddleware(c *fiber.Ctx) error {
 		c.Set(fiber.HeaderWWWAuthenticate, "Basic realm=Restricted")
 
 		if c.Get(fiber.HeaderAccept) == fiber.MIMEApplicationJSON {
-			return c.Status(fiber.StatusForbidden).JSON(map[string]interface{}{
-				"success": false,
-				"error":   reason,
+			return c.Status(fiber.StatusForbidden).JSON(errorResponse{
+				Success: false,
+				Error:   reason,
 			})
 		}
 
