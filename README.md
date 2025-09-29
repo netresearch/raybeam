@@ -6,6 +6,7 @@
 [![Go Version](https://img.shields.io/github/go-mod/go-version/netresearch/raybeam)](https://go.dev/dl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Latest Release](https://img.shields.io/github/v/release/netresearch/raybeam)](https://github.com/netresearch/raybeam/releases)
+[![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/netresearch/raybeam/graphs/commit-activity)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/netresearch/raybeam/pulls)
 
