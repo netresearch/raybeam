@@ -1,5 +1,14 @@
 # Raybeam
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/netresearch/raybeam.svg)](https://pkg.go.dev/github.com/netresearch/raybeam)
+[![Go Report Card](https://goreportcard.com/badge/github.com/netresearch/raybeam)](https://goreportcard.com/report/github.com/netresearch/raybeam)
+[![Docker Build](https://github.com/netresearch/raybeam/actions/workflows/docker.yml/badge.svg)](https://github.com/netresearch/raybeam/actions/workflows/docker.yml)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/netresearch/raybeam)](https://go.dev/dl/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Latest Release](https://img.shields.io/github/v/release/netresearch/raybeam)](https://github.com/netresearch/raybeam/releases)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/netresearch/raybeam/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/netresearch/raybeam/pulls)
+
 Raybeam is a simple public key store written in [Go](https://go.dev/) and currently only supports storing SSH public
 keys.
 
