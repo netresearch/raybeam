@@ -1,3 +1,5 @@
+// Package server implements the HTTP API server for Raybeam.
+// It provides REST endpoints for SSH key management with LDAP authentication.
 package server
 
 import (
@@ -7,6 +9,8 @@ import (
 	"go.etcd.io/bbolt"
 )
 
+// Server represents the Raybeam HTTP server with its dependencies.
+// It manages the Fiber application, BoltDB connection, and LDAP client.
 type Server struct {
 	app *fiber.App
 	db  *bbolt.DB
@@ -15,6 +19,9 @@ type Server struct {
 	ldapAdminGroupDN string
 }
 
+// New creates a new Raybeam server instance with the provided configuration.
+// It initializes the LDAP connection, Fiber app, and sets up all routes.
+// Returns an error if LDAP connection fails.
 func New(db *bbolt.DB, ldapConfig ldap.Config, ldapReadUser, ldapReadPassword, ldapAdminGroupDN string) (*Server, error) {
 	l, err := ldap.New(ldapConfig, ldapReadUser, ldapReadPassword)
 	if err != nil {
@@ -54,6 +61,9 @@ func (s *Server) init() {
 	s.app.Delete("/users/:sAMAccountNames/ssh-keys/:fingerprint", s.authMiddleware, s.handleHTTPDeleteUsersSSHKey)
 }
 
+// Listen starts the HTTP server on the specified address.
+// The address should be in the format ":port" or "host:port".
+// This is a blocking call that runs until the server is shut down.
 func (s *Server) Listen(addr string) error {
 	return s.app.Listen(addr)
 }

@@ -128,6 +128,18 @@ netresearch_docker_containers:
 
 > ℹ For more information, please refer to the [documentation of netresearch.docker_containers](https://github.com/netresearch/ansible_role_docker_containers#container-definition).
 
+## Documentation
+
+Comprehensive documentation is available in the [`docs/`](docs/) directory:
+
+- **[API Reference](docs/api.md)** - Complete REST API documentation with examples
+- **[Architecture](docs/architecture.md)** - System design and component architecture
+- **[Security](docs/security.md)** - Security model, threat analysis, and best practices
+- **[Deployment](docs/deployment.md)** - Docker, Kubernetes, and binary deployment guides
+- **[Development](docs/development.md)** - Contributing guidelines and development workflow
+
+For a comprehensive overview, start with the [Documentation Index](docs/README.md).
+
 ## License
 
 Raybeam is licensed under the MIT license, for more information please refer to the [included LICENSE file](LICENSE).

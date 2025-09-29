@@ -71,9 +71,13 @@ func TestBasicAuth(t *testing.T) {
 }
 
 func TestAuthMiddlewareInvalidCredentials(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+
 	l, err := getWorkingLdap()
 	if err != nil {
-		t.Error(err)
+		t.Skip(err)
 		return
 	}
 
@@ -86,9 +90,13 @@ func TestAuthMiddlewareInvalidCredentials(t *testing.T) {
 }
 
 func TestAuthMiddlewareWithInvalidAuthorizationHeader(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+
 	l, err := getWorkingLdap()
 	if err != nil {
-		t.Error(err)
+		t.Skip(err)
 		return
 	}
 
@@ -98,9 +106,13 @@ func TestAuthMiddlewareWithInvalidAuthorizationHeader(t *testing.T) {
 }
 
 func TestAuthMiddlewareWithInvalidCredentials(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+
 	l, err := getWorkingLdap()
 	if err != nil {
-		t.Error(err)
+		t.Skip(err)
 		return
 	}
 
@@ -113,9 +125,13 @@ func TestAuthMiddlewareWithInvalidCredentials(t *testing.T) {
 }
 
 func TestAuthMiddlewareWithInvalidCredentials2(t *testing.T) {
+	if testing.Short() {
+		t.Skip("Skipping integration test in short mode")
+	}
+
 	l, err := getWorkingLdap()
 	if err != nil {
-		t.Error(err)
+		t.Skip(err)
 		return
 	}
 
