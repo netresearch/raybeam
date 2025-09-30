@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"strings"
 	"testing"
 
@@ -21,6 +20,16 @@ const (
 	testSSHKeyFingerprint1 = "SHA256:GJz8qVZV9lWqXxZnz7xZQVlqW8F5h3j0K9Xr3g3kM2n"
 	testSSHKeyFingerprint2 = "SHA256:ABC123xyz789DefGhi012Jkl345Mno678Pqr901Stu234"
 )
+
+// fingerprintToURLSafeTest converts a standard SSH fingerprint to URL-safe format for tests.
+// This must match the implementation in route_ssh_key.go.
+// Standard format: SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU
+// URL-safe format: SHA256:-DiY3wvvV6TuJJhbpZisF_zLDA0zPMSvHdkr4UvCOqU
+func fingerprintToURLSafeTest(fingerprint string) string {
+	fingerprint = strings.ReplaceAll(fingerprint, "+", "-")
+	fingerprint = strings.ReplaceAll(fingerprint, "/", "_")
+	return fingerprint
+}
 
 // Helper functions for making authenticated requests
 
@@ -353,7 +362,7 @@ func TestHandleHTTPGetUsersMeSSHKey_Success_JSON(t *testing.T) {
 	}
 
 	// Get specific key
-	resp := makeAuthRequest(t, srv, "GET", fmt.Sprintf("/users/@me/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "GET", fmt.Sprintf("/users/@me/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, true)
 
 	if resp.StatusCode != fiber.StatusOK {
@@ -399,7 +408,7 @@ func TestHandleHTTPGetUsersMeSSHKey_Success_PlainText(t *testing.T) {
 	}
 
 	// Get specific key as plain text
-	resp := makeAuthRequest(t, srv, "GET", fmt.Sprintf("/users/@me/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "GET", fmt.Sprintf("/users/@me/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, false)
 
 	if resp.StatusCode != fiber.StatusOK {
@@ -462,7 +471,7 @@ func TestHandleHTTPDeleteUsersMeSSHKey_Success_JSON(t *testing.T) {
 	}
 
 	// Delete specific key
-	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/@me/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/@me/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, true)
 
 	if resp.StatusCode != fiber.StatusOK {
@@ -477,7 +486,7 @@ func TestHandleHTTPDeleteUsersMeSSHKey_Success_JSON(t *testing.T) {
 	}
 
 	// Verify key is deleted
-	getResp := makeAuthRequest(t, srv, "GET", fmt.Sprintf("/users/@me/ssh-keys/%s", url.PathEscape(fingerprint)),
+	getResp := makeAuthRequest(t, srv, "GET", fmt.Sprintf("/users/@me/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, true)
 	if getResp.StatusCode != fiber.StatusNotFound {
 		t.Errorf("Expected key to be deleted, but got status %d", getResp.StatusCode)
@@ -511,7 +520,7 @@ func TestHandleHTTPDeleteUsersMeSSHKey_Success_PlainText(t *testing.T) {
 	}
 
 	// Delete specific key
-	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/@me/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/@me/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, false)
 
 	if resp.StatusCode != fiber.StatusOK {
@@ -931,7 +940,7 @@ func TestHandleHTTPGetUserSSHKey_SingleUser_JSON(t *testing.T) {
 	}
 
 	// Get specific key
-	resp := makeRequest(t, srv, "GET", fmt.Sprintf("/users/user1/ssh-keys/%s", url.PathEscape(fingerprint)), nil, true)
+	resp := makeRequest(t, srv, "GET", fmt.Sprintf("/users/user1/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)), nil, true)
 
 	if resp.StatusCode != fiber.StatusOK {
 		t.Errorf("Expected status %d, got %d", fiber.StatusOK, resp.StatusCode)
@@ -982,7 +991,7 @@ func TestHandleHTTPGetUserSSHKey_MultipleUsers_JSON(t *testing.T) {
 	}
 
 	// Get specific key for both users
-	resp := makeRequest(t, srv, "GET", fmt.Sprintf("/users/user1,user2/ssh-keys/%s", url.PathEscape(fingerprint)), nil, true)
+	resp := makeRequest(t, srv, "GET", fmt.Sprintf("/users/user1,user2/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)), nil, true)
 
 	if resp.StatusCode != fiber.StatusOK {
 		t.Errorf("Expected status %d, got %d", fiber.StatusOK, resp.StatusCode)
@@ -1062,7 +1071,7 @@ func TestHandleHTTPGetUserSSHKey_PlainText(t *testing.T) {
 	}
 
 	// Get specific key as plain text
-	resp := makeRequest(t, srv, "GET", fmt.Sprintf("/users/user1/ssh-keys/%s", url.PathEscape(fingerprint)), nil, false)
+	resp := makeRequest(t, srv, "GET", fmt.Sprintf("/users/user1/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)), nil, false)
 
 	if resp.StatusCode != fiber.StatusOK {
 		t.Errorf("Expected status %d, got %d", fiber.StatusOK, resp.StatusCode)
@@ -1103,7 +1112,7 @@ func TestHandleHTTPDeleteUsersSSHKey_SingleUser_JSON(t *testing.T) {
 	}
 
 	// Delete specific key (requires auth for this endpoint)
-	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/user1/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/user1/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, true)
 
 	if resp.StatusCode != fiber.StatusOK {
@@ -1151,7 +1160,7 @@ func TestHandleHTTPDeleteUsersSSHKey_MultipleUsers_JSON(t *testing.T) {
 	}
 
 	// Delete specific key for both users (requires auth)
-	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/user1/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/user1/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, true)
 
 	if resp.StatusCode != fiber.StatusOK {
@@ -1209,7 +1218,7 @@ func TestHandleHTTPDeleteUsersSSHKey_PlainText(t *testing.T) {
 	}
 
 	// Delete specific key
-	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/user1/ssh-keys/%s", url.PathEscape(fingerprint)),
+	resp := makeAuthRequest(t, srv, "DELETE", fmt.Sprintf("/users/user1/ssh-keys/%s", fingerprintToURLSafeTest(fingerprint)),
 		"user1", "testpass", nil, false)
 
 	if resp.StatusCode != fiber.StatusOK {
