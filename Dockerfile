@@ -9,7 +9,7 @@ RUN go mod download
 COPY . /build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /raybeam
 
-FROM alpine:3.22.2 AS runner
+FROM alpine:3.23.0 AS runner
 
 COPY --from=builder /raybeam /bin/raybeam
 
