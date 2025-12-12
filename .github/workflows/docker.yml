@@ -7,7 +7,7 @@ on:
     - cron: "0 0 * * 0"
   push:
     branches:
-      - master
+      - main
 
 env:
   REGISTRY: ghcr.io
