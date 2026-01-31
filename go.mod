@@ -4,7 +4,7 @@ go 1.25.1
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.12
-	github.com/gofiber/fiber/v2 v2.52.10
+	github.com/gofiber/fiber/v2 v2.52.11
 	github.com/netresearch/simple-ldap-go v1.8.0
 	github.com/spf13/cobra v1.10.2
 	go.etcd.io/bbolt v1.4.3
