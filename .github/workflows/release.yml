@@ -1,23 +1,79 @@
-name: Create GitHub release
+name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to (re)build (e.g. v1.0.9)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
-  release:
+  create-release:
+    name: Create GitHub Release
+    uses: netresearch/.github/.github/workflows/create-release.yml@main
+    permissions:
+      contents: write
+    with:
+      tag: ${{ inputs.tag || '' }}
+
+  binaries:
+    name: Build binaries
+    needs: create-release
     strategy:
       fail-fast: false
       matrix:
-        goos: [linux, darwin]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        include:
+          - { goos: linux, goarch: amd64 }
+          - { goos: linux, goarch: arm64 }
+          - { goos: linux, goarch: arm, goarm: "7" }
+          - { goos: darwin, goarch: amd64 }
+          - { goos: darwin, goarch: arm64 }
+    uses: netresearch/.github/.github/workflows/build-go-attest.yml@main
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    with:
+      binary-name: raybeam-${{ matrix.goos }}-${{ matrix.goarch }}
+      goos: ${{ matrix.goos }}
+      goarch: ${{ matrix.goarch }}
+      goarm: ${{ matrix.goarm || '' }}
+      ref: ${{ needs.create-release.outputs.tag }}
+      release-tag: ${{ needs.create-release.outputs.tag }}
+      sbom: true
 
-      - name: Release binaries
-        uses: wangyoucao577/go-release-action@279495102627de7960cbc33434ab01a12bae144b # v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: ${{ matrix.goos }}
-          goarch: amd64
+  container:
+    name: Build container image
+    needs: create-release
+    uses: netresearch/.github/.github/workflows/build-container.yml@main
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+      id-token: write
+      attestations: write
+    with:
+      image-name: raybeam
+      ref: ${{ needs.create-release.outputs.tag }}
+      platforms: "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64"
+      sign: true
+      attest: true
+
+  finalize:
+    name: Finalize release
+    needs: [create-release, binaries, container]
+    uses: netresearch/.github/.github/workflows/finalize-release.yml@main
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    with:
+      tag: ${{ needs.create-release.outputs.tag }}
+      image-ref: ghcr.io/${{ github.repository_owner }}/raybeam
