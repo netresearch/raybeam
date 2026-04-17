@@ -8,6 +8,7 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -19,6 +20,8 @@ jobs:
       contents: read
       packages: write
       security-events: write
+      id-token: write
+      attestations: write
     with:
       image-name: raybeam
       platforms: "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64"
