@@ -2,156 +2,33 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Set up Go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: 'go.mod'
-          cache: true
-
-      - name: Run gofmt
-        run: |
-          if [ -n "$(gofmt -l .)" ]; then
-            echo "The following files are not formatted:"
-            gofmt -l .
-            exit 1
-          fi
-
-      - name: Run go vet
-        run: go vet ./...
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9
-        with:
-          version: latest
-          args: --timeout=5m
-
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Set up Go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: 'go.mod'
-          cache: true
-
-      - name: Download dependencies
-        run: go mod download
-
-      - name: Verify dependencies
-        run: go mod verify
-
-      - name: Run tests
-        run: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.txt
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, darwin, windows]
-        goarch: [amd64, arm64]
-        exclude:
-          - goos: windows
-            goarch: arm64
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Set up Go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: 'go.mod'
-          cache: true
-
-      - name: Build binary
-        run: |
-          mkdir -p dist
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -v -o dist/raybeam-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goos == 'windows' && '.exe' || '' }} .
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: raybeam-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/*
-          retention-days: 7
-
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
+  go-check:
+    name: Go
+    uses: netresearch/.github/.github/workflows/go-check.yml@4f6d149347c61a27ce243f5ac8011d6748487341 # main
     permissions:
       contents: read
       security-events: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+    with:
+      go-version-file: go.mod
+      setup-bun: false
+      enable-codecov: true
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - name: Set up Go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: 'go.mod'
-          cache: true
+  lint-workflows:
+    uses: netresearch/.github/.github/workflows/lint-workflows.yml@4f6d149347c61a27ce243f5ac8011d6748487341 # main
 
-      - name: Run Gosec Security Scanner
-        uses: securego/gosec@64b97151cd7b978abdf8d2f1159a4e9096a12c2b # master
-        with:
-          args: '-no-fail -fmt sarif -out results.sarif ./...'
+  lint-markdown:
+    uses: netresearch/.github/.github/workflows/lint-markdown.yml@4f6d149347c61a27ce243f5ac8011d6748487341 # main
 
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4
-        with:
-          sarif_file: results.sarif
-
-  typecheck:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Set up Go
-        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
-        with:
-          go-version-file: 'go.mod'
-          cache: true
-
-      - name: Run type check
-        run: go build -o /dev/null ./...
-
-  validate:
-    name: Validate
-    runs-on: ubuntu-latest
-    needs: [lint, test, build, security, typecheck]
-    steps:
-      - name: All checks passed
-        run: echo "All CI checks passed successfully!"
+  lint-yaml:
+    uses: netresearch/.github/.github/workflows/lint-yaml.yml@4f6d149347c61a27ce243f5ac8011d6748487341 # main
