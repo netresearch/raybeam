@@ -24,8 +24,11 @@ jobs:
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  lint-meta:
-    name: Meta
-    uses: netresearch/.github/.github/workflows/ci.yml@main
-    permissions:
-      contents: read
+  lint-workflows:
+    uses: netresearch/.github/.github/workflows/lint-workflows.yml@main
+
+  lint-markdown:
+    uses: netresearch/.github/.github/workflows/lint-markdown.yml@main
+
+  lint-yaml:
+    uses: netresearch/.github/.github/workflows/lint-yaml.yml@main
