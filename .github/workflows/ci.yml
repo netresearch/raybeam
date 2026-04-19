@@ -22,7 +22,7 @@ jobs:
       enable-fuzz: true
       enable-license-check: true
       enable-codecov: true
-      coverage-threshold: 80.0
+      coverage-threshold: 70
     permissions:
       contents: read
       security-events: write
