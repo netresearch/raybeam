@@ -30,10 +30,11 @@ func Execute() {
 // formatVersion assembles cobra's Version string from build.Version
 // (release tag) and build.CommitHash (git SHA). Layout:
 //
-//	<version>                           - commit unset (local go run)
-//	<version> (<commit-short>)          - both set (tagged release, or
-//	                                      untagged build where Version
-//	                                      equals the SHA — dedup)
+//	<version>                  - commit unset (local go run) OR
+//	                             commit == version (VCS fallback,
+//	                             no ldflag tag — dedup)
+//	<version> (<commit-short>) - commit set and distinct from version
+//	                             (tagged release)
 //
 // Extracted for unit-testability.
 func formatVersion(version, commit string) string {
