@@ -63,7 +63,19 @@ go build -o raybeam .
 - **Coverage goal:** 70%+ for handlers, 80%+ for models
 - **Table-driven tests:** Prefer `[]struct{name, input, want, wantErr}` pattern
 - **Mocking:** Use interfaces for LDAP/DB mocking; avoid real LDAP in unit tests
-- **Integration tests:** Require `LDAP_SERVER` etc. env vars; skip if not set
+- **Test tiers:**
+  - **Unit** (default, no tags): `go test ./...`
+  - **Integration** (`//go:build integration`): drives `internal/ldap_service` /
+    auth paths against a real OpenLDAP testcontainer. Run with
+    `go test -tags integration -race ./...`. Requires Docker.
+  - **E2E** (`//go:build e2e`): boots the full raybeam HTTP server on an
+    ephemeral port against a real OpenLDAP testcontainer and hits it with
+    an `http.Client`. Run with `go test -tags e2e -race ./...`. Requires
+    Docker.
+  - Test scaffolding lives in `internal/testsupport/ldapcontainer` (shared)
+    and `internal/testsupport/raybeamserver` (e2e only). All testsupport
+    files are gated by build tags and do **not** land in the default
+    `go build` / `go test` output.
 
 Example test pattern:
 

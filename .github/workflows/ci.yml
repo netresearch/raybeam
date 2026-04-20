@@ -23,6 +23,11 @@ jobs:
       enable-license-check: true
       enable-codecov: true
       coverage-threshold: 80.0
+      # raybeam has integration + e2e tiers that exercise real OpenLDAP via
+      # testcontainers-go and the raybeam HTTP server on an ephemeral port.
+      # See internal/testsupport/ldapcontainer and e2e/ for scaffolding.
+      enable-integration-tests: true
+      enable-e2e-tests: true
     permissions:
       contents: read
       security-events: write

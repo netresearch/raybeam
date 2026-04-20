@@ -3,6 +3,8 @@
 package server
 
 import (
+	"net"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	ldap "github.com/netresearch/simple-ldap-go"
@@ -66,4 +68,20 @@ func (s *Server) init() {
 // This is a blocking call that runs until the server is shut down.
 func (s *Server) Listen(addr string) error {
 	return s.app.Listen(addr)
+}
+
+// Serve starts the HTTP server on a caller-provided net.Listener. This lets
+// callers bind to port 0 ahead of time (useful for tests) and read the
+// resolved port from the listener before calling Serve.
+//
+// This is a blocking call that returns when the listener is closed or the
+// server encounters a fatal error. Use Shutdown to stop the server.
+func (s *Server) Serve(ln net.Listener) error {
+	return s.app.Listener(ln)
+}
+
+// Shutdown gracefully stops the HTTP server, allowing in-flight requests to
+// complete. Intended for test teardown and graceful-restart scenarios.
+func (s *Server) Shutdown() error {
+	return s.app.Shutdown()
 }
