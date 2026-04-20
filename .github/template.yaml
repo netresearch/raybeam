@@ -2,6 +2,4 @@
 # Drift from the template is blocking CI in this repo (check-template-drift.yml).
 # Record explicit exceptions under intentional-drift[] to unblock.
 template: go-app
-intentional-drift:
-- path: .github/workflows/ci.yml
-  reason: "coverage-threshold at 70% \u2014 transitional until coverage reaches 80%"
+intentional-drift: []
