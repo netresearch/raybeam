@@ -1,16 +1,33 @@
-FROM golang:1.26.2-alpine AS builder
-WORKDIR /build
-RUN apk add git
+# Binary-selector stage — pick the pre-built raybeam binary for the target
+# platform. build-go-attest.yml (from release.yml's binaries matrix) produces
+# bin/raybeam-linux-{386,amd64,arm64,armv6,armv7}; this stage chooses the
+# right one for TARGETARCH/TARGETVARIANT instead of compiling Go in Docker.
+FROM alpine:3.23.4 AS binary-selector
 
-COPY ./go.mod /build
-COPY ./go.sum /build
-RUN go mod download
+ARG TARGETARCH
+ARG TARGETVARIANT
 
-COPY . /build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /raybeam
+COPY bin/raybeam-linux-* /tmp/
 
-FROM alpine:3.23.4 AS runner
+RUN set -eux; \
+    case "${TARGETARCH}" in \
+        arm)              BINARY="raybeam-linux-arm${TARGETVARIANT}" ;; \
+        386|amd64|arm64)  BINARY="raybeam-linux-${TARGETARCH}" ;; \
+        *) echo "Unsupported architecture: ${TARGETARCH}" >&2; exit 1 ;; \
+    esac; \
+    cp "/tmp/${BINARY}" /usr/bin/raybeam; \
+    chmod +x /usr/bin/raybeam
 
-COPY --from=builder /raybeam /bin/raybeam
+# Runtime stage
+FROM alpine:3.23.4
 
-CMD [ "/bin/raybeam" ]
+# OCI image annotations (dynamic labels — created/version/revision — are
+# added by docker/metadata-action inside build-container.yml).
+LABEL org.opencontainers.image.title="raybeam" \
+      org.opencontainers.image.source="https://github.com/netresearch/raybeam" \
+      org.opencontainers.image.vendor="Netresearch DTT GmbH" \
+      org.opencontainers.image.licenses="MIT"
+
+COPY --from=binary-selector /usr/bin/raybeam /bin/raybeam
+
+ENTRYPOINT ["/bin/raybeam"]
