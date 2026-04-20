@@ -19,10 +19,32 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	rootCmd.Version = build.Version
+	rootCmd.Version = formatVersion(build.Version, build.CommitHash)
 	if err := rootCmd.Execute(); err != nil {
 		// Ignore errors that occur by printing to stderr, because where are we going to print them
 		_, _ = fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
+}
+
+// formatVersion assembles cobra's Version string from build.Version
+// (release tag) and build.CommitHash (git SHA). Layout:
+//
+//	<version>                           - commit unset (local go run)
+//	<version> (<commit-short>)          - both set (tagged release, or
+//	                                      untagged build where Version
+//	                                      equals the SHA — dedup)
+//
+// Extracted for unit-testability.
+func formatVersion(version, commit string) string {
+	if commit == "" || commit == version {
+		return version
+	}
+
+	short := commit
+	if len(short) > 7 {
+		short = short[:7]
+	}
+
+	return version + " (" + short + ")"
 }
