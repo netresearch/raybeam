@@ -1,7 +1,12 @@
 # Binary-selector stage — pick the pre-built raybeam binary for the target
-# platform. build-go-attest.yml (from release.yml's binaries matrix) produces
-# bin/raybeam-linux-{386,amd64,arm64,armv6,armv7}; this stage chooses the
-# right one for TARGETARCH/TARGETVARIANT instead of compiling Go in Docker.
+# platform. release.yml's binaries matrix (build-go-attest.yml) publishes
+# raybeam-linux-{386,amd64,arm64,armv6,armv7} as release assets; the
+# container job downloads them back into bin/ via gh release download
+# before `docker build` runs, and this stage chooses the right one for
+# TARGETARCH/TARGETVARIANT instead of compiling Go in Docker.
+#
+# Local `docker build` outside CI therefore requires the bin/ directory
+# to be populated first (e.g. via goreleaser or a manual cross-compile).
 FROM alpine:3.23.4 AS binary-selector
 
 ARG TARGETARCH
@@ -30,4 +35,7 @@ LABEL org.opencontainers.image.title="raybeam" \
 
 COPY --from=binary-selector /usr/bin/raybeam /bin/raybeam
 
-ENTRYPOINT ["/bin/raybeam"]
+# CMD (not ENTRYPOINT) preserves the override semantics the previous
+# Dockerfile shipped with — `docker run <image> sh` runs a shell, not
+# `raybeam sh`. Users relying on CMD-override behavior keep working.
+CMD ["/bin/raybeam"]
