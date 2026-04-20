@@ -361,11 +361,13 @@ func TestDeleteKeyFromUser_IdempotentWhenFingerprintMissing(t *testing.T) {
 	}
 
 	var got []SSHKey
-	_ = db.View(func(tx *bbolt.Tx) error {
+	if err := db.View(func(tx *bbolt.Tx) error {
 		k, e := GetKeysForUser(tx, dn)
 		got = k
 		return e
-	})
+	}); err != nil {
+		t.Fatalf("GetKeysForUser error: %v", err)
+	}
 	if len(got) != len(sampleKeys()) {
 		t.Fatalf("expected all keys intact (%d), got %d", len(sampleKeys()), len(got))
 	}
@@ -401,10 +403,12 @@ func TestDeleteKeysForUser_RemovesAllForDN(t *testing.T) {
 
 	// The bucket entry itself should be gone.
 	var raw []byte
-	_ = db.View(func(tx *bbolt.Tx) error {
+	if err := db.View(func(tx *bbolt.Tx) error {
 		raw = tx.Bucket(SSHKeyBucket).Get([]byte(dn))
 		return nil
-	})
+	}); err != nil {
+		t.Fatalf("db.View error: %v", err)
+	}
 	if raw != nil {
 		t.Fatalf("expected nil raw value after delete, got %q", string(raw))
 	}
@@ -439,11 +443,13 @@ func TestDeleteKeysForUser_IdempotentOnUnknownDN(t *testing.T) {
 
 	// Other user's keys untouched.
 	var got []SSHKey
-	_ = db.View(func(tx *bbolt.Tx) error {
+	if err := db.View(func(tx *bbolt.Tx) error {
 		k, e := GetKeysForUser(tx, "CN=other,DC=example,DC=com")
 		got = k
 		return e
-	})
+	}); err != nil {
+		t.Fatalf("GetKeysForUser error: %v", err)
+	}
 	if len(got) != len(sampleKeys()) {
 		t.Fatalf("expected other user's keys intact, got %d", len(got))
 	}
