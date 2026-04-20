@@ -2,4 +2,12 @@
 # Drift from the template is blocking CI in this repo (check-template-drift.yml).
 # Record explicit exceptions under intentional-drift[] to unblock.
 template: go-app
-intentional-drift: []
+intentional-drift:
+  - path: .github/workflows/ci.yml
+    reason: >-
+      raybeam enables the integration and e2e test tiers exposed by the
+      go-check reusable workflow (enable-integration-tests +
+      enable-e2e-tests). The tiers bring up a real OpenLDAP via
+      testcontainers-go and exercise the live raybeam HTTP server. The
+      shared template does not yet set these flags; once it does, this
+      entry can be removed and the workflow can re-sync cleanly.
