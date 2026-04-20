@@ -4,6 +4,15 @@
 codecov:
   branch: main
 
+# Exclude test-tier scaffolding from coverage gates. These files are gated
+# by //go:build integration or //go:build e2e; their coverage shows up
+# under the `integration` and `e2e` Codecov flags (uploaded by the
+# go-check reusable workflow) but would otherwise look 0% under the
+# default `unittests` flag and drag patch/project gates down.
+ignore:
+  - "internal/testsupport/**"
+  - "e2e/**"
+
 coverage:
   status:
     project:
