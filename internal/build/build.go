@@ -24,7 +24,7 @@ var CommitHash = vcsRevision
 
 // vcsRevision is the VCS revision reported by runtime/debug once at
 // package init. Both Version and CommitHash key off it so we only
-// scan build.Settings once.
+// scan debug.BuildInfo.Settings once.
 var vcsRevision = func() string {
 	info, hasInfo := debug.ReadBuildInfo()
 	if !hasInfo {
