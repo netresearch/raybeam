@@ -5,20 +5,21 @@ import (
 	buildpkg "raybeam/internal/build"
 )
 
-// Build-injected version metadata. Populated by release.yml's ldflags:
+// Build-injected version metadata:
 //
-//	-X main.version=<release-tag>
-//	-X main.build=<commit-sha>
-//	-X main.buildTime=<commit-timestamp>
+//	version   <- release.yml's ldflags: -X main.version=<release-tag>
+//	build     <- release.yml's ldflags: -X main.build=<commit-sha>
+//	buildTime <- build-go-attest.yml's auto-build-timestamp step:
+//	             -X main.buildTime=<ISO-8601 commit timestamp>
 //
 // Forwarded into internal/build at init() so `raybeam --version`
 // reports release info. Empty on `go run` / untagged builds, in which
 // case internal/build falls back to ReadBuildInfo's vcs.revision.
 //
-// buildTime is declared to receive the template's third ldflag target
-// even though raybeam doesn't currently surface a timestamp. Keeping
-// the var declared is cheap insurance against any future linker
-// strictness about unknown -X targets.
+// buildTime is declared to receive the auto-build-timestamp output
+// even though raybeam doesn't currently surface a timestamp. The
+// declaration is required: auto-build-timestamp fails the build step
+// when the ldflag would have nowhere to land on older Go toolchains.
 var (
 	version   = ""
 	build     = ""
