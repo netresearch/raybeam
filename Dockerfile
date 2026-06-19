@@ -7,7 +7,7 @@
 #
 # Local `docker build` outside CI therefore requires the bin/ directory
 # to be populated first (e.g. via goreleaser or a manual cross-compile).
-FROM alpine:3.24.0 AS binary-selector
+FROM alpine:3.24.1 AS binary-selector
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -24,7 +24,7 @@ RUN set -eux; \
     chmod +x /usr/bin/raybeam
 
 # Runtime stage
-FROM alpine:3.24.0
+FROM alpine:3.24.1
 
 # OCI image annotations (dynamic labels — created/version/revision — are
 # added by docker/metadata-action inside build-container.yml).
