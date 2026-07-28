@@ -11,14 +11,6 @@ import (
 	"go.etcd.io/bbolt"
 )
 
-// LDAPClient interface defines the LDAP operations needed by the server.
-// This interface allows for mock implementations in tests.
-type LDAPClient interface {
-	FindUserBySAMAccountName(sAMAccountName string) (*ldap.User, error)
-	FindUsersBySAMAccountNames(sAMAccountNames []string) ([]*ldap.User, error)
-	CheckPasswordForSAMAccountName(sAMAccountName, password string) (*ldap.User, error)
-}
-
 // MockLDAP implements LDAPClient for testing.
 type MockLDAP struct {
 	users    map[string]*ldap.User
@@ -26,6 +18,11 @@ type MockLDAP struct {
 }
 
 // setObjectDN uses reflection to set the DN field in an ldap.Object (which has unexported fields).
+//
+// simple-ldap-go exposes no constructor that takes a DN — Object.dn is written
+// only by objectFromEntry when decoding a directory response — so a fixture
+// cannot be built through the public API. This lives in a _test.go file so the
+// unsafe write is compiled into the test binary only.
 func setObjectDN(obj interface{}, dn string) {
 	// Get the reflect.Value of the object
 	v := reflect.ValueOf(obj).Elem()
