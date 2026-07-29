@@ -3,8 +3,6 @@ package server
 import (
 	"os"
 	"raybeam/internal/models"
-	"reflect"
-	"unsafe"
 
 	"github.com/gofiber/fiber/v2"
 	ldap "github.com/netresearch/simple-ldap-go"
@@ -17,57 +15,32 @@ type MockLDAP struct {
 	password string // single password for all test users
 }
 
-// setObjectDN uses reflection to set the DN field in an ldap.Object (which has unexported fields).
-//
-// simple-ldap-go exposes no constructor that takes a DN — Object.dn is written
-// only by objectFromEntry when decoding a directory response — so a fixture
-// cannot be built through the public API. This lives in a _test.go file so the
-// unsafe write is compiled into the test binary only.
-func setObjectDN(obj interface{}, dn string) {
-	// Get the reflect.Value of the object
-	v := reflect.ValueOf(obj).Elem()
-
-	// Find the embedded Object field
-	objField := v.FieldByName("Object")
-	if !objField.IsValid() {
-		return
-	}
-
-	// Use unsafe to access unexported field
-	dnField := objField.FieldByName("dn")
-	if dnField.IsValid() {
-		// Make the field settable using unsafe pointer
-		dnFieldPtr := unsafe.Pointer(dnField.UnsafeAddr())
-		*(*string)(dnFieldPtr) = dn
-	}
-}
-
 // NewMockLDAP creates a mock LDAP client with predefined test users.
 func NewMockLDAP() *MockLDAP {
 	adminUser := &ldap.User{
+		Object:         ldap.NewObject("admin", "CN=admin,OU=Users,DC=example,DC=com"),
 		SAMAccountName: "admin",
 		Groups: []string{
 			"CN=Admins,OU=Groups,DC=example,DC=com",
 			"CN=Users,OU=Groups,DC=example,DC=com",
 		},
 	}
-	setObjectDN(adminUser, "CN=admin,OU=Users,DC=example,DC=com")
 
 	regularUser := &ldap.User{
+		Object:         ldap.NewObject("user1", "CN=user1,OU=Users,DC=example,DC=com"),
 		SAMAccountName: "user1",
 		Groups: []string{
 			"CN=Users,OU=Groups,DC=example,DC=com",
 		},
 	}
-	setObjectDN(regularUser, "CN=user1,OU=Users,DC=example,DC=com")
 
 	user2 := &ldap.User{
+		Object:         ldap.NewObject("user2", "CN=user2,OU=Users,DC=example,DC=com"),
 		SAMAccountName: "user2",
 		Groups: []string{
 			"CN=Users,OU=Groups,DC=example,DC=com",
 		},
 	}
-	setObjectDN(user2, "CN=user2,OU=Users,DC=example,DC=com")
 
 	return &MockLDAP{
 		users: map[string]*ldap.User{
