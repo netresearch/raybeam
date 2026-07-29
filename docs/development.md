@@ -111,8 +111,8 @@ raybeam/
 ├── README.md                  # Project overview
 ├── LICENSE                    # MIT license
 └── .github/workflows/         # GitHub Actions CI/CD
-    ├── docker.yml             # Docker image builds
-    └── release.yml            # Binary releases
+    ├── ci.yml                 # Lint, test, coverage
+    └── release.yml            # Binaries + container image
 ```
 
 ### Package Organization
@@ -607,31 +607,38 @@ go mod tidy
 
 ### GitHub Actions Workflows
 
-**Docker Build** (`.github/workflows/docker.yml`):
-- Triggers: release publish, weekly cron, master push
-- Builds multi-platform images (linux/amd64, arm64, etc.)
-- Pushes to ghcr.io
+**CI** (`.github/workflows/ci.yml`):
+- Triggers: push to `main`, tags, pull requests, merge queue, weekly cron
+- Lint, unit/integration/e2e tests, fuzzing, license check, coverage
 
 **Release** (`.github/workflows/release.yml`):
-- Triggers: release publish
-- Builds binaries for linux and darwin (amd64)
-- Attaches to GitHub release
+- Triggers: `v*` tag push, manual dispatch
+- Builds binaries for linux (386, amd64, arm64, armv6, armv7), darwin (amd64, arm64) and windows (amd64)
+- Builds the multi-platform container image from those binaries and pushes it to ghcr.io
+- Attaches binaries, SBOMs and attestations to the GitHub release
 
 ### Local Testing
 
-Simulate CI locally:
+The Dockerfile does not compile Go. Its `binary-selector` stage copies a
+pre-built binary from `bin/` and picks the one matching the target platform.
+In CI the release pipeline puts the binaries there; locally you cross-compile
+them yourself first:
 
 ```bash
-# Build Docker image
+# Build the binary for the platform the image should target
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -o bin/raybeam-linux-amd64 .
+
+# Build the image
 docker build -t raybeam:test .
 
 # Run container
 docker run --rm raybeam:test raybeam --version
-
-# Test multi-stage build
-docker build --target builder -t raybeam:builder .
-docker build --target runner -t raybeam:runner .
 ```
+
+A multi-platform build needs one binary per target platform in `bin/`: the
+selector maps `linux/386`, `linux/amd64`, `linux/arm64`, `linux/arm/v6` and
+`linux/arm/v7` to `raybeam-linux-386`, `-amd64`, `-arm64`, `-armv6` and
+`-armv7` respectively.
 
 ## Debugging
 
