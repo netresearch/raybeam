@@ -38,4 +38,11 @@ COPY --from=binary-selector /usr/bin/raybeam /bin/raybeam
 # CMD (not ENTRYPOINT) preserves the override semantics the previous
 # Dockerfile shipped with — `docker run <image> sh` runs a shell, not
 # `raybeam sh`. Users relying on CMD-override behavior keep working.
+# The serve port is not EXPOSEd/configured here; deployments pass it via the
+# serve flags. 8080 is the documented default and what every known deployment
+# uses (traefik server.port label). Probe /info: cheap, unauthenticated, and
+# proves the HTTP stack + config load, not just the process.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q -O /dev/null http://127.0.0.1:8080/info || exit 1
+
 CMD ["/bin/raybeam"]
