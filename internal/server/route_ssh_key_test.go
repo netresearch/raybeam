@@ -78,7 +78,7 @@ func readBodyString(t *testing.T, resp *http.Response) string {
 	return string(body)
 }
 
-func parseJSONResponse(t *testing.T, resp *http.Response, v interface{}) {
+func parseJSONResponse(t *testing.T, resp *http.Response, v any) {
 	t.Helper()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
