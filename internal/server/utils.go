@@ -4,7 +4,7 @@ import "github.com/gofiber/fiber/v2"
 
 func sendError(c *fiber.Ctx, statusCode int, reason string) error {
 	if acceptsJson(c) {
-		return c.Status(statusCode).JSON(map[string]interface{}{
+		return c.Status(statusCode).JSON(map[string]any{
 			"success": false,
 			"error":   reason,
 		})
