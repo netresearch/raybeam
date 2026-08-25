@@ -68,7 +68,7 @@ func (h *harness) do(t *testing.T, method, path string, body []byte, headers map
 	return resp
 }
 
-func decodeJSON(t *testing.T, resp *http.Response, out interface{}) {
+func decodeJSON(t *testing.T, resp *http.Response, out any) {
 	t.Helper()
 	defer func() { _ = resp.Body.Close() }()
 	if err := json.NewDecoder(resp.Body).Decode(out); err != nil {
@@ -155,8 +155,8 @@ func TestE2E_UploadAndFetchOwnSSHKey(t *testing.T) {
 		t.Fatalf("initial GET @me/ssh-keys: status=%d body=%s", resp.StatusCode, readBody(t, resp))
 	}
 	var initial struct {
-		Success bool                   `json:"success"`
-		Keys    map[string]interface{} `json:"keys"`
+		Success bool           `json:"success"`
+		Keys    map[string]any `json:"keys"`
 	}
 	decodeJSON(t, resp, &initial)
 	if !initial.Success {
@@ -298,7 +298,7 @@ func TestE2E_DeleteSingleKey_FrontToBack(t *testing.T) {
 		"Accept":        "application/json",
 	})
 	var after struct {
-		Keys map[string]interface{} `json:"keys"`
+		Keys map[string]any `json:"keys"`
 	}
 	decodeJSON(t, resp, &after)
 	if len(after.Keys) != 0 {
