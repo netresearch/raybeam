@@ -4,7 +4,7 @@ import (
 	"os"
 	"raybeam/internal/models"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	ldap "github.com/netresearch/simple-ldap-go"
 	"go.etcd.io/bbolt"
 )
@@ -123,7 +123,7 @@ func newTestServer(ldapClient LDAPClient, adminGroupDN string) (*Server, func(),
 
 	// Initialize Fiber app and routes
 	srv.app = fiber.New(fiber.Config{
-		ErrorHandler: func(c *fiber.Ctx, err error) error {
+		ErrorHandler: func(c fiber.Ctx, err error) error {
 			return c.Status(500).SendString(err.Error())
 		},
 	})

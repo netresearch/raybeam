@@ -5,7 +5,7 @@ import (
 	"raybeam/internal/build"
 	"testing"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 // TestHandleHTTPGetInfo verifies that /info returns a JSON document containing
