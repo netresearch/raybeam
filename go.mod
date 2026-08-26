@@ -1,13 +1,13 @@
 module raybeam
 
-go 1.26
+go 1.26.0
 
 toolchain go1.27.0
 
 require (
 	github.com/go-ldap/ldap/v3 v3.4.14
 	github.com/gofiber/fiber/v3 v3.5.0
-	github.com/netresearch/simple-ldap-go v1.14.0
+	github.com/netresearch/simple-ldap-go v1.16.0
 	github.com/spf13/cobra v1.10.2
 	github.com/testcontainers/testcontainers-go v0.44.0
 	github.com/testcontainers/testcontainers-go/modules/openldap v0.44.0
