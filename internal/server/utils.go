@@ -1,8 +1,8 @@
 package server
 
-import "github.com/gofiber/fiber/v2"
+import "github.com/gofiber/fiber/v3"
 
-func sendError(c *fiber.Ctx, statusCode int, reason string) error {
+func sendError(c fiber.Ctx, statusCode int, reason string) error {
 	if acceptsJson(c) {
 		return c.Status(statusCode).JSON(map[string]any{
 			"success": false,
@@ -13,6 +13,6 @@ func sendError(c *fiber.Ctx, statusCode int, reason string) error {
 	return c.Status(statusCode).SendString(reason)
 }
 
-func acceptsJson(c *fiber.Ctx) bool {
+func acceptsJson(c fiber.Ctx) bool {
 	return c.Get(fiber.HeaderAccept) == fiber.MIMEApplicationJSON
 }

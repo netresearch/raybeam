@@ -6,7 +6,7 @@ import (
 	"raybeam/internal/models"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	ldap "github.com/netresearch/simple-ldap-go"
 	"go.etcd.io/bbolt"
 	"golang.org/x/crypto/ssh"
@@ -134,7 +134,7 @@ func (s *Server) uploadSSHKeyForDN(dn string, rawKey []byte) error {
 	})
 }
 
-func (s *Server) handleHTTPGetUsersMeSSHKeys(c *fiber.Ctx) error {
+func (s *Server) handleHTTPGetUsersMeSSHKeys(c fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 
 	keys, err := s.getSSHKeysForDN(user.DN())
@@ -157,7 +157,7 @@ func (s *Server) handleHTTPGetUsersMeSSHKeys(c *fiber.Ctx) error {
 	return c.SendString(strings.Join(rawKeys, ""))
 }
 
-func (s *Server) handleHTTPPutUsersMeSSHKey(c *fiber.Ctx) error {
+func (s *Server) handleHTTPPutUsersMeSSHKey(c fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 
 	if err := s.uploadSSHKeyForDN(user.DN(), c.Body()); err != nil {
@@ -173,7 +173,7 @@ func (s *Server) handleHTTPPutUsersMeSSHKey(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (s *Server) handleHTTPDeleteUsersMeSSHKeys(c *fiber.Ctx) error {
+func (s *Server) handleHTTPDeleteUsersMeSSHKeys(c fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 
 	if err := s.deleteSSHKeysForDN(user.DN()); err != nil {
@@ -189,7 +189,7 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKeys(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-func (s *Server) handleHTTPGetUsersMeSSHKey(c *fiber.Ctx) error {
+func (s *Server) handleHTTPGetUsersMeSSHKey(c fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 	urlSafeFingerprint := c.Params("fingerprint")
 	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
@@ -213,7 +213,7 @@ func (s *Server) handleHTTPGetUsersMeSSHKey(c *fiber.Ctx) error {
 	return c.SendString(key.Key)
 }
 
-func (s *Server) handleHTTPDeleteUsersSSHKeys(c *fiber.Ctx) error {
+func (s *Server) handleHTTPDeleteUsersSSHKeys(c fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 
 	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
@@ -240,7 +240,7 @@ func (s *Server) handleHTTPDeleteUsersSSHKeys(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
+func (s *Server) handleHTTPGetUsersSSHKeys(c fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 	keys := make(map[string]map[string]models.SSHKey)
 
@@ -280,7 +280,7 @@ func (s *Server) handleHTTPGetUsersSSHKeys(c *fiber.Ctx) error {
 	return c.SendString(strings.Join(rawKeys, ""))
 }
 
-func (s *Server) handleHTTPPutUsersSSHKey(c *fiber.Ctx) error {
+func (s *Server) handleHTTPPutUsersSSHKey(c fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 
 	users, err := s.ldap.FindUsersBySAMAccountNames(sAMAccountNames)
@@ -307,7 +307,7 @@ func (s *Server) handleHTTPPutUsersSSHKey(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusCreated)
 }
 
-func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
+func (s *Server) handleHTTPDeleteUsersMeSSHKey(c fiber.Ctx) error {
 	user := c.Locals("user").(ldap.User)
 	urlSafeFingerprint := c.Params("fingerprint")
 	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
@@ -325,7 +325,7 @@ func (s *Server) handleHTTPDeleteUsersMeSSHKey(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
 }
 
-func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
+func (s *Server) handleHTTPGetUserSSHKey(c fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 	urlSafeFingerprint := c.Params("fingerprint")
 	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)
@@ -369,7 +369,7 @@ func (s *Server) handleHTTPGetUserSSHKey(c *fiber.Ctx) error {
 	return c.SendString(strings.Join(rawKeys, ""))
 }
 
-func (s *Server) handleHTTPDeleteUsersSSHKey(c *fiber.Ctx) error {
+func (s *Server) handleHTTPDeleteUsersSSHKey(c fiber.Ctx) error {
 	sAMAccountNames := strings.Split(c.Params("sAMAccountNames"), ",")
 	urlSafeFingerprint := c.Params("fingerprint")
 	fingerprint := fingerprintFromURLSafe(urlSafeFingerprint)

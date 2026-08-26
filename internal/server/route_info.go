@@ -3,10 +3,10 @@ package server
 import (
 	"raybeam/internal/build"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
-func (s *Server) handleHTTPGetInfo(c *fiber.Ctx) error {
+func (s *Server) handleHTTPGetInfo(c fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"version": build.Version,
 		"source":  build.Repository,

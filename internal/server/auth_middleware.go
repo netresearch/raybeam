@@ -8,7 +8,7 @@ import (
 	ldap2 "github.com/go-ldap/ldap/v3"
 	ldap "github.com/netresearch/simple-ldap-go"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 var (
@@ -70,7 +70,7 @@ func authMiddleware(authHeader string, l LDAPClient) (*ldap.User, error) {
 	return user, nil
 }
 
-func (s *Server) authMiddleware(c *fiber.Ctx) error {
+func (s *Server) authMiddleware(c fiber.Ctx) error {
 	unauthorized := func(reason string) error {
 		c.Set(fiber.HeaderWWWAuthenticate, "Basic realm=Restricted")
 		c.Status(fiber.StatusUnauthorized)
@@ -95,7 +95,7 @@ func (s *Server) authMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func (s *Server) isAdminMiddleware(c *fiber.Ctx) error {
+func (s *Server) isAdminMiddleware(c fiber.Ctx) error {
 	unauthorized := func(reason string) error {
 		c.Set(fiber.HeaderWWWAuthenticate, "Basic realm=Restricted")
 
