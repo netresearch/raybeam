@@ -8,7 +8,7 @@ This guide covers setting up a development environment, project structure, codin
 
 ### Prerequisites
 
-- **Go**: 1.24.0 or later (toolchain 1.25.1)
+- **Go**: 1.27.0 or later (toolchain 1.27.1)
 - **Git**: For version control
 - **Docker**: For testing with LDAP (optional but recommended)
 - **Make**: For build automation (optional)
