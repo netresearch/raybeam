@@ -279,7 +279,7 @@ type SSHKey struct {
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| Go | 1.24+ / 1.25.1 | Programming language and runtime |
+| Go | 1.27+ / 1.27.1 | Programming language and runtime |
 | gofiber/fiber | v2.52.9 | High-performance HTTP framework |
 | bbolt | v1.4.3 | Embedded key-value database |
 | simple-ldap-go | v1.0.3 | LDAP authentication library |
