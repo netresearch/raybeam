@@ -1,7 +1,7 @@
 {
   "_comment": "Proposed answers for the OpenSSF Best Practices badge, derived from evidence in this repository. Only criteria backed by a file or setting are listed; everything else is left for the maintainers to answer. Format: https://github.com/ossf/best-practices-badge/blob/main/docs/bestpractices-json.md",
   "dependency_monitoring_status": "Met",
-  "dependency_monitoring_justification": "govulncheck checks the code against the Go vulnerability database in CI and fails the job when it reports a vulnerability the code actually reaches, so each such finding has to be fixed or assessed before a change passes: https://github.com/netresearch/raybeam/blob/main/.github/workflows/ci.yml (shared workflow: https://github.com/netresearch/.github/blob/main/.github/workflows/go-check.yml).",
+  "dependency_monitoring_justification": "govulncheck checks the code against the Go vulnerability database in CI and, in strict mode (the shared workflow's default, which this repository keeps), fails the job on every vulnerability the code actually reaches, so such a finding has to be fixed before a change passes: https://github.com/netresearch/raybeam/blob/main/.github/workflows/ci.yml (shared workflow: https://github.com/netresearch/.github/blob/main/.github/workflows/go-check.yml).",
   "discussion_status": "Met",
   "discussion_justification": "GitHub issues and pull requests are public, searchable, addressable by URL and need no proprietary client: https://github.com/netresearch/raybeam/issues",
   "floss_license_status": "Met",
