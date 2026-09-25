@@ -7,7 +7,7 @@ toolchain go1.27.1
 require (
 	github.com/go-ldap/ldap/v3 v3.4.14
 	github.com/gofiber/fiber/v3 v3.5.0
-	github.com/netresearch/simple-ldap-go v1.18.0
+	github.com/netresearch/simple-ldap-go v1.18.1
 	github.com/spf13/cobra v1.10.2
 	github.com/testcontainers/testcontainers-go v0.44.0
 	github.com/testcontainers/testcontainers-go/modules/openldap v0.44.0
