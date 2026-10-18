@@ -10,7 +10,7 @@ This file explains repo-wide conventions for the Raybeam SSH key store and where
 
 Raybeam is a lightweight SSH public key store written in Go with LDAP authentication. It provides a REST API for managing SSH keys with role-based access control.
 
-- **Language:** Go 1.27+ (toolchain go1.27.1)
+- **Language:** Go 1.27+ (toolchain go1.27.2)
 - **Frameworks:** Fiber v2 (HTTP), BoltDB (storage), simple-ldap-go (auth)
 - **Entry points:** `main.go` → `cmd/` (Cobra CLI) → `internal/server/` (HTTP handlers)
 - **Documentation:** See [`docs/`](docs/) for comprehensive guides
