@@ -53,7 +53,7 @@ func TestServerServeAndShutdown(t *testing.T) {
 	}
 	if !ready {
 		_ = srv.Shutdown()
-		<-serveErr
+		_ = <-serveErr // drain the serve goroutine; the test fails below either way
 		t.Fatal("server did not become ready within 5s")
 	}
 
