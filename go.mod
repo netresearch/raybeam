@@ -9,8 +9,8 @@ require (
 	github.com/gofiber/fiber/v3 v3.6.1
 	github.com/netresearch/simple-ldap-go v1.18.1
 	github.com/spf13/cobra v1.10.2
-	github.com/testcontainers/testcontainers-go v0.44.0
-	github.com/testcontainers/testcontainers-go/modules/openldap v0.44.0
+	github.com/testcontainers/testcontainers-go v0.45.0
+	github.com/testcontainers/testcontainers-go/modules/openldap v0.45.0
 	go.etcd.io/bbolt v1.5.0
 	golang.org/x/crypto v0.58.0
 )
