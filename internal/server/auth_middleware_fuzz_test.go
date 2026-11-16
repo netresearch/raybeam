@@ -49,6 +49,14 @@ func FuzzBasicAuth(f *testing.F) {
 			t.Fatalf("username %q contains the ':' separator", user)
 		}
 
+		raw, decodeErr := base64.StdEncoding.DecodeString(header[6:])
+		if decodeErr != nil {
+			t.Fatalf("accepted header %q whose payload does not decode: %v", header, decodeErr)
+		}
+		if string(raw) != user+":"+password {
+			t.Fatalf("credentials %q/%q do not reproduce the decoded payload %q", user, password, raw)
+		}
+
 		reencoded := "Basic " + base64.StdEncoding.EncodeToString([]byte(user+":"+password))
 		gotUser, gotPassword, err := basicAuth(reencoded)
 		if err != nil || gotUser != user || gotPassword != password {
