@@ -61,10 +61,11 @@ go install .
 docker run -d \
   --name test-ldap \
   -p 389:389 \
-  -e LDAP_ORGANISATION="Example Inc" \
-  -e LDAP_DOMAIN="example.org" \
-  -e LDAP_ADMIN_PASSWORD="admin" \
-  osixia/openldap:latest
+  -e OPENLDAP_URLS="ldap://:389 ldapi:///" \
+  -e OPENLDAP_BOOTSTRAP_ORGANIZATION="Example Inc" \
+  -e OPENLDAP_BOOTSTRAP_SUFFIX="dc=example,dc=org" \
+  -e OPENLDAP_BOOTSTRAP_DATA_ROOT_PASSWORD_HASHED="admin" \
+  osixia/openldap:2.6.15
 
 # Run Raybeam against test LDAP
 ./raybeam serve \
